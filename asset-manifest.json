@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/PhonebookMockapi/static/css/main.7acaea2f.css",
+    "main.js": "/PhonebookMockapi/static/js/main.35b9845b.js",
+    "index.html": "/PhonebookMockapi/index.html",
+    "main.7acaea2f.css.map": "/PhonebookMockapi/static/css/main.7acaea2f.css.map",
+    "main.35b9845b.js.map": "/PhonebookMockapi/static/js/main.35b9845b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7acaea2f.css",
+    "static/js/main.35b9845b.js"
+  ]
+}
