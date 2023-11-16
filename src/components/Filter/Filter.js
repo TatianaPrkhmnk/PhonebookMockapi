@@ -1,14 +1,14 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setFilter } from '../../redux/contactSlice';
+import { setFilter } from 'redux/contactSlice';
 
 function Filter() {
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.contacts.filter);
 
   const handleChange = (e) => {
-    const newFilter = e.target.value;
-    dispatch(setFilter(newFilter));
+    // Установка фильтра
+    dispatch(setFilter(e.target.value));
   };
 
   return (

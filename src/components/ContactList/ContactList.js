@@ -1,33 +1,26 @@
+// components/ContactList.jsx
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteContact } from '../../redux/contactSlice';
+import { deleteContact,  } from 'redux/contactSlice';
 
 function ContactList() {
-  const contacts = useSelector((state) => state.contacts.items);
-  const filter = useSelector((state) => state.contacts.filter);
   const dispatch = useDispatch();
+  const contacts = useSelector((state) => state.contacts.items);
 
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
-
-  const handleDelete = (contactId) => {
-    dispatch(deleteContact(contactId));
+  const handleDelete = (id) => {
+    // Удаление контакта
+    dispatch(deleteContact(id));
   };
 
   return (
-    <div>
-      <ul>
-        {filteredContacts.map((contact) => (
-          <li key={contact.id}>
-            {contact.name} - {contact.number}{' '}
-            <button type="button" onClick={() => handleDelete(contact.id)}>
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul>
+      {contacts.map((contact) => (
+        <li key={contact.id}>
+          {contact.name}: {contact.phone}{' '}
+          <button onClick={() => handleDelete(contact.id)}>Delete</button>
+        </li>
+      ))}
+    </ul>
   );
 }
 
