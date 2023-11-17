@@ -1,27 +1,25 @@
-// components/ContactList.jsx
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { deleteContact,  } from 'redux/contactSlice';
+import { useSelector } from 'react-redux';
 
-function ContactList() {
-  const dispatch = useDispatch();
-  const contacts = useSelector((state) => state.contacts.items);
+import { selectContactsFilter, selectContactsList } from 'redux/selectors';
 
-  const handleDelete = (id) => {
-    // Удаление контакта
-    dispatch(deleteContact(id));
-  };
+import { ContactsListItem } from '../ContactListItem/ContactListItem';
+
+import { ContactsList } from './ContactList.module';
+
+export const ContactList = () => {
+  const contacts = useSelector(selectContactsList);
+  const filter = useSelector(selectContactsFilter);
+  const visibleContacts = [
+    ...contacts.filter(contact => contact.name.toLowerCase().includes(filter)),
+  ];
+
+  console.log(visibleContacts);
 
   return (
-    <ul>
-      {contacts.map((contact) => (
-        <li key={contact.id}>
-          {contact.name}: {contact.phone}{' '}
-          <button onClick={() => handleDelete(contact.id)}>Delete</button>
-        </li>
+    <ContactsList>
+      {visibleContacts.map(({ name, phone, id }) => (
+        <ContactsListItem key={id} id={id} name={name} number={phone} />
       ))}
-    </ul>
+    </ContactsList>
   );
-}
-
-export default ContactList;
+};

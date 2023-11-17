@@ -1,89 +1,51 @@
-// redux/contactSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+// 6555ecb984b36e3a431ea70e
+import { createSlice } from '@reduxjs/toolkit';
+import { fetchContacts, addContact, deleteContact } from './operations';
 
-// Операция для получения контактов
-export const fetchContacts = createAsyncThunk('contacts/fetchAll', async (_, { dispatch }) => {
-  try {
-    const response = await fetch('https://6555ecb984b36e3a431ea70e.mockapi.io/contacts');
-    const data = await response.json();
+const handlePending = state => {
+  state.isLoading = true;
+};
 
-    dispatch(setContacts(data));
-  } catch (error) {
-    console.error('Error fetching contacts:', error);
-  }
-});
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
 
-// Операция для добавления контакта
-export const addContact = createAsyncThunk('contacts/addContact', async (newContact, { dispatch }) => {
-  try {
-    const response = await fetch('https://6555ecb984b36e3a431ea70e.mockapi.io/contacts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newContact),
-    });
+const contactsInitialState = {
+  items: [],
+  isLoading: false,
+  error: null,
+};
 
-    const data = await response.json();
-
-    dispatch(setContacts(data));
-  } catch (error) {
-    console.error('Error adding contact:', error);
-  }
-});
-
-// Операция для удаления контакта
-export const deleteContact = createAsyncThunk('contacts/deleteContact', async (contactId, { dispatch }) => {
-  try {
-    await fetch(`https://6555ecb984b36e3a431ea70e.mockapi.io/contacts/${contactId}`, {
-      method: 'DELETE',
-    });
-
-    dispatch(fetchContacts());
-  } catch (error) {
-    console.error('Error deleting contact:', error);
-  }
-});
-
-const contactSlice = createSlice({
+const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: {
-    items: [],
-    isLoading: false,
-    error: null,
-    filter: '', // Добавлено начальное значение filter
-  },
-  reducers: {
-    setContacts: (state, action) => {
+  initialState: contactsInitialState,
+  extraReducers: {
+    [fetchContacts.pending]: handlePending,
+    [fetchContacts.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
       state.items = action.payload;
     },
-    setLoader: (state, action) => {
-      state.isLoading = action.payload;
+    [fetchContacts.rejected]: handleRejected,
+    [addContact.pending]: handlePending,
+    [addContact.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      state.items.push(action.payload);
     },
-    setError: (state, action) => {
-      state.error = action.payload;
+    [addContact.rejected]: handleRejected,
+    [deleteContact.pending]: handlePending,
+    [deleteContact.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const index = state.items.findIndex(
+        task => task.id === action.payload.id
+      );
+      state.items.splice(index, 1);
     },
-    setFilter: (state, action) => {
-      state.filter = action.payload;
-    },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchContacts.pending, (state) => {
-        state.isLoading =
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchContacts.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.items = action.payload;
-      })
-      .addCase(fetchContacts.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error.message;
-      });
+    [deleteContact.rejected]: handleRejected,
   },
 });
 
-export const { setContacts, setLoader, setError, setFilter } = contactSlice.actions;
-export default contactSlice.reducer;
+export const contactsReducer = contactsSlice.reducer;
